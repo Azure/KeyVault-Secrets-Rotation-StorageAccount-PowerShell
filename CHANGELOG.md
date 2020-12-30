@@ -1,18 +1,18 @@
-## Key Vault Rotation Function for [ServiceType] Key Changelog
+## Key Vault Rotation Function for StorageAccount Key Changelog
 
 <a name="keyvault-rotation-storageaccountkey-powershell"></a>
 
-# Keyvault-Rotation-[ServiceType]Key-PowerShell (2020-12-22)
+# Keyvault-Rotation-StorageAccountKey-PowerShell (2020-12-22)
 
 *Features*
 
-* Rotation function for [ServiceType] key triggered by Event Grid (AKV[ServiceType]Rotation)
+* Rotation function for StorageAccount key triggered by Event Grid (AKVStorageAccountRotation)
 
-* Rotation function for [ServiceType] key triggered by HTTP call(AKV[ServiceType]RotationHttp)
+* Rotation function for StorageAccount key triggered by HTTP call(AKVStorageAccountRotationHttp)
 
 * ARM template for function deployment
 
-* ARM template for adding [ServiceType] key to existing function
+* ARM template for adding StorageAccount key to existing function
 
 *Bug Fixes*
 

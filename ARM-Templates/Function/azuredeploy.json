@@ -2,18 +2,18 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-          "[ServiceType]RG": {
+          "StorageAccountRG": {
             "defaultValue": "[resourceGroup().name]",
             "type": "String",
             "metadata": {
-                "description": "The name of the resource group where [ServiceType] with keys to rotate has deployed."
+                "description": "The name of the resource group where StorageAccount with keys to rotate has deployed."
             }
         },
-        "[ServiceType]Name": {
-            "defaultValue": "[concat(resourceGroup().name, '[ServiceType]')]",
+        "StorageAccountName": {
+            "defaultValue": "[concat(resourceGroup().name, 'StorageAccount')]",
             "type": "String",
             "metadata": {
-                "description": "The name of the [ServiceType] with keys to rotate."
+                "description": "The name of the StorageAccount with keys to rotate."
             }
         },
         "keyVaultRG": {
@@ -49,14 +49,14 @@
             }
         },
         "secretName": {
-            "defaultValue": "[ServiceType]Key",
+            "defaultValue": "StorageAccountKey",
             "type": "String",
             "metadata": {
-                "description": "The name of the secret where [ServiceType] keys are stored."
+                "description": "The name of the secret where StorageAccount keys are stored."
             }
         },
         "repoURL": {
-            "defaultValue": "<address to github repo i.e. https://github.com/Azure-Samples/KeyVault-Rotation-StorageAccountKey-PowerShell.git>",
+            "defaultValue": "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git>",
             "type": "String",
             "metadata": {
                 "description": "The URL for the GitHub repository that contains the project to deploy."
@@ -218,7 +218,7 @@
                                     "properties": {
                                         "maxEventsPerBatch": 1,
                                         "preferredBatchSizeInKilobytes": 64,
-                                        "resourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'/functions/AKV[ServiceType]Rotation')]"
+                                        "resourceId": "[concat(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'/functions/AKVStorageAccountRotation')]"
                                     }
                                 },
                                 "filter": {
@@ -234,35 +234,32 @@
             }
         },
         {
-
-            //EXAMPLE OF GRANTING ACCESS TO STORAGE
-
-            // "name": "storage-grant-access",
-            // "type": "Microsoft.Resources/deployments",
-            // "apiVersion": "2019-10-01",
-            // "subscriptionId": "[subscription().subscriptionId]",
-            // "resourceGroup": "[parameters('storageAccountRG')]",
-            // "dependsOn": [
-            //     "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
-            // ],
-            // "properties": {
-            //     "mode": "Incremental",
-            //     "template": {
-            //         "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-            //         "contentVersion": "1.0.0.0",
-            //         "resources": [
-            //             {
-            //                 "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-            //                 "apiVersion": "2018-09-01-preview",
-            //                 "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(concat(parameters('storageAccountName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
-            //                 "properties": {
-            //                     "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
-            //                     "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
-            //                 }
-            //             }
-            //         ]
-            //     }
-            // }
+            "name": "storage-grant-access",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2019-10-01",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "resourceGroup": "[parameters('storageAccountRG')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('functionAppName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
+                            "apiVersion": "2018-09-01-preview",
+                            "name": "[concat(parameters('storageAccountName'), '/Microsoft.Authorization/', guid(concat(parameters('storageAccountName'),reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId)))]",
+                            "properties": {
+                                "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '81a9662b-bebf-436f-a333-f67b29880f12')]",
+                                "principalId": "[reference(resourceId('Microsoft.Web/sites', parameters('functionAppName')),'2019-08-01', 'Full').identity.principalId]"
+                            }
+                        }
+                    ]
+                }
+            }
         }
     ]
 }
