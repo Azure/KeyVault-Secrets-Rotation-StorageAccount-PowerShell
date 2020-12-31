@@ -1,6 +1,6 @@
 # KeyVault-Secrets-Rotation-StorageAccountKey-PowerShell
 
-Functions regenerate individual key (alternating between two keys) in StorageAccount and add regenerated key to Key Vault as new version of the same secret.
+Functions regenerate individual key (alternating between two keys) in Storage Account and add regenerated key to Key Vault as new version of the same secret.
 
 ## Features
 
@@ -8,7 +8,7 @@ This project framework provides the following features:
 
 * Rotation function for StorageAccount key triggered by Event Grid (AKVStorageAccountRotation)
 
-* Rotation function for StorageAccount key triggered by HTTP call (AKVStorageAccountRotationHttp)
+* Rotation function for Storage Account key triggered by HTTP call (AKVStorageAccountRotationHttp)
 
 * ARM template for function deployment
 
@@ -19,10 +19,10 @@ This project framework provides the following features:
 Functions require following information stored in secret as tags:
 
 * $secret.Tags["ValidityPeriodDays"] - number of days, it defines expiration date for new secret
-* $secret.Tags["CredentialId"] - StorageAccount key id (key1/key2)
-* $secret.Tags["ProviderAddress"] - StorageAccount Resource Id
+* $secret.Tags["CredentialId"] - Storage Account credential id (i.e. key1/key2)
+* $secret.Tags["ProviderAddress"] - Storage Account Resource Id
 
-You can create new secret with above tags and StorageAccount key as value or add those tags to existing secret with StorageAccount key. For automated rotation expiry date will also be required - key vault triggers 'SecretNearExpiry' event 30 days before expiry.
+You can create new secret with above tags and Storage Account key as value or add those tags to existing secret with Storage Account key. For automated rotation expiry date will also be required - key vault triggers 'SecretNearExpiry' event 30 days before expiry.
 
 There are two available functions performing same rotation:
 
