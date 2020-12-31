@@ -3,11 +3,6 @@ param($eventGridEvent, $TriggerMetadata)
 function RegenerateCredential($credentialId, $providerAddress){
     Write-Host "Regenerating credential. Id: $credentialId Resource Id: $providerAddress"
     
-    #Write code to regenerate credential, update your service with new credential and return it
-
-    #EXAMPLE FOR STORAGE
-
-    <#  
     $storageAccountName = ($providerAddress -split '/')[8]
     $resourceGroupName = ($providerAddress -split '/')[4]
     
@@ -15,16 +10,9 @@ function RegenerateCredential($credentialId, $providerAddress){
     New-AzStorageAccountKey -ResourceGroupName $resourceGroupName -Name $storageAccountName -KeyName $credentialId
     $credentialValue = (Get-AzStorageAccountKey -ResourceGroupName $resourceGroupName -AccountName $storageAccountName|where KeyName -eq $credentialId).value 
     return $newCredentialValue
-    
-    #>
 }
 
 function GetAlternateCredentialId($credentialId){
-    #Write code to get alternate credential id for your service
-
-   #EXAMPLE FOR STORAGE
-
-   <#
    $validCredentialIdsRegEx = 'key[1-2]'
    
    If($credentialId -NotMatch $validCredentialIdsRegEx){
@@ -36,7 +24,6 @@ function GetAlternateCredentialId($credentialId){
    Else{
        return "key1"
    }
-   #>
 }
 
 function AddSecretToKeyVault($keyVAultName,$secretName,$secretvalue,$exprityDate,$tags){
