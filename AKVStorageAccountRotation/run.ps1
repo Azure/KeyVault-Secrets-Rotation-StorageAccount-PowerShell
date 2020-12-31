@@ -67,6 +67,7 @@ function RoatateSecret($keyVaultName,$secretName){
 
     Write-Host "New credential added to Key Vault. Secret Name: $secretName"
 }
+$ErrorActionPreference = "Stop"
 
 # Make sure to pass hashtables to Out-String so they're logged correctly
 $eventGridEvent | ConvertTo-Json | Write-Host
