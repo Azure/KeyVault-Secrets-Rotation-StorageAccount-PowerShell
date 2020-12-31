@@ -56,7 +56,7 @@
             }
         },
         "repoURL": {
-            "defaultValue": "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git>",
+            "defaultValue": "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git",
             "type": "String",
             "metadata": {
                 "description": "The URL for the GitHub repository that contains the project to deploy."
