@@ -1,8 +1,8 @@
 ## Key Vault Rotation Function for StorageAccount Key Changelog
 
-<a name="keyvault-rotation-storageaccountkey-powershell"></a>
+<a name="KeyVault-Rotation-StorageAccount-PowerShell"></a>
 
-# Keyvault-Rotation-StorageAccountKey-PowerShell (2020-12-22)
+# Keyvault-Rotation-StorageAccount-PowerShell (2020-12-22)
 
 *Features*
 

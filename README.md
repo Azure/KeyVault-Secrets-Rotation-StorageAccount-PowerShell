@@ -1,4 +1,4 @@
-# KeyVault-Secrets-Rotation-StorageAccountKey-PowerShell
+# KeyVault-Secrets-Rotation-StorageAccount-PowerShell
 
 Functions regenerate individual key (alternating between two keys) in Storage Account and add regenerated key to Key Vault as new version of the same secret.
 
