@@ -55,18 +55,33 @@
                 "description": "The name of the secret where StorageAccount keys are stored."
             }
         },
-        "repoURL": {
-            "defaultValue": "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git",
-            "type": "String",
+		"deploySecretWithStorageAccountKeyToKeyVault": {
+            "defaultValue": "true",
+            "type": "bool",
             "metadata": {
-                "description": "The URL for the GitHub repository that contains the project to deploy."
+                "description": "Add StorageAccount key to key vault. New secret is created with key as value"
+            }
+        },
+        "secretExpirationDateUnixTime": {
+            "type": "int",
+            "metadata": {
+                "description": "Expiry date in seconds since 1970-01-01T00:00:00Z."
+            }
+        },
+		"secretValidityPeriodDays": {
+            "defaultValue": 90,
+            "type": "int",
+            "metadata": {
+                "description": "Secret validity period days. It is used to calculate expiration date for a secret after rotation"
             }
         }
+        
     },
     "variables": {
         "functionStorageAccountName": "[concat(uniquestring(parameters('functionAppName')), 'fnappstrg')]",
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
-        "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]"
+        "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
+        "StorageAccountResourceId":"[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
     },
     "resources": [
         {
@@ -99,7 +114,7 @@
             "name": "[parameters('functionAppName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverfarms', concat(resourceGroup().name, '-rotation-fnapp-plan'))]",
+                "[resourceId('Microsoft.Web/serverfarms', concat(resourceGroup().name, '-StorageAccount-rotation-fnapp-plan'))]",
                 "[resourceId('Microsoft.Storage/storageAccounts', variables('functionStorageAccountName'))]"
             ],
             "kind": "functionapp",
@@ -108,7 +123,7 @@
             },
             "properties": {
                 "enabled": true,
-                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',concat(resourceGroup().name, '-rotation-fnapp-plan'))]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms',concat(resourceGroup().name, '-StorageAccount-rotation-fnapp-plan'))]",
                 "siteConfig": {
                     "appSettings": [
                         {
@@ -151,7 +166,7 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('functionAppName'))]"
                     ],
                     "properties": {
-                        "RepoUrl": "[parameters('repoURL')]",
+                        "RepoUrl": "https://github.com/Azure/KeyVault-Secrets-Rotation-StorageAccount-PowerShell.git",
                         "branch": "main",
                         "IsManualIntegration": true
                     }
@@ -226,6 +241,25 @@
                                     "subjectEndsWith": "[parameters('secretName')]",
                                     "includedEventTypes": [ "Microsoft.KeyVault.SecretNearExpiry" ]
 
+                                }
+                            }
+                        },
+                        {
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "apiVersion": "2019-09-01",
+                            "condition": "[parameters('deploySecretWithStorageAccountKeyToKeyVault')]",
+                            "name": "[concat(parameters('keyVaultName'), '/', parameters('secretName'))]",
+                            "location": "[resourceGroup().location]",
+                            "dependsOn": [],
+                            "tags": {
+                                "ValidityPeriodDays":"[parameters('secretValidityPeriodDays')]",
+                                "CredentialId":"key1",
+                                "ProviderAddress":"[variables('StorageAccountResourceId')]"
+                            },
+                            "properties": {
+                                "value": "[listKeys(variables('StorageAccountResourceId'), '2019-04-01').keys[0].value]",
+                                "attributes": {
+                                    "exp": "[parameters('secretExpirationDateUnixTime')]"
                                 }
                             }
                         }
