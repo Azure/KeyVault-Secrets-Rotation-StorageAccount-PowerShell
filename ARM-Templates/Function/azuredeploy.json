@@ -81,7 +81,7 @@
         "functionStorageAccountName": "[concat(uniquestring(parameters('functionAppName')), 'fnappstrg')]",
         "eventSubscriptionName": "[concat(parameters('functionAppName'),'-',parameters('secretName'))]",
         "appServiceSKU":"[if(equals(parameters('appServicePlanType'),'Consumption Plan'),'Y1','P1V2')]",
-        "StorageAccountResourceId":"[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
+        "ProviderResourceId":"[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('StorageAccountRG'),'/providers/Microsoft.Storage/storageAccounts/',parameters('storageAccountName'))]"
     },
     "resources": [
         {
@@ -187,7 +187,7 @@
             }
         },
         {
-            "name": "kv-event-subscription-and-grant-access",
+            "name": "kv-event-subscription-and-grant-access-and-secret-deployment",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2019-10-01",
             "subscriptionId": "[subscription().subscriptionId]",
@@ -254,10 +254,10 @@
                             "tags": {
                                 "ValidityPeriodDays":"[parameters('secretValidityPeriodDays')]",
                                 "CredentialId":"key1",
-                                "ProviderAddress":"[variables('StorageAccountResourceId')]"
+                                "ProviderAddress":"[variables('ProviderResourceId')]"
                             },
                             "properties": {
-                                "value": "[listKeys(variables('StorageAccountResourceId'), '2019-04-01').keys[0].value]",
+                                "value": "[listKeys(variables('ProviderResourceId'), '2019-04-01').keys[0].value]",
                                 "attributes": {
                                     "exp": "[parameters('secretExpirationDateUnixTime')]"
                                 }
