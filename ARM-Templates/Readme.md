@@ -2,7 +2,7 @@
 
 This template creates below components to help demonstrate StorageAccount keys rotation in Key Vault using Function and Event Grid notification.
 
-### StorageAccount keys rotation functions ARM template:
+### StorageAccount keys rotation function ARM template:
 
 Components:
 
